@@ -39,11 +39,15 @@ public class SchoolServiceBeanFactoryPostProcessor implements BeanFactoryPostPro
      */
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) beanFactory;
-        ProcessorCandidatesSupplier supplier = defaultListableBeanFactory.getBean(ProcessorCandidatesSupplier.class);
-        Map<String, BeanDefinition> candidates = supplier.getCandidates(defaultListableBeanFactory);
+        var defaultListableBeanFactory = (DefaultListableBeanFactory) beanFactory;
+        var supplier = defaultListableBeanFactory.getBean(ProcessorCandidatesSupplier.class);
+        var candidates = supplier.getCandidates(defaultListableBeanFactory);
+        var deanDefinitionGenerator = defaultListableBeanFactory.getBean(SchoolBeanDefinitionGenerate.class);
         for (String s : candidates.keySet()) {
-            System.out.println(s);
+            var beanDefinitionMap = deanDefinitionGenerator.generateBeanDefinition(s, candidates.get(s));
+            for (String beanName : beanDefinitionMap.keySet()) {
+                defaultListableBeanFactory.registerBeanDefinition(beanName, beanDefinitionMap.get(beanName));
+            }
         }
     }
 }
