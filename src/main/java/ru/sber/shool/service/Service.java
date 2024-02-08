@@ -1,20 +1,23 @@
 package ru.sber.shool.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class Service {
 
-    private Logger logger;
-    private Monitoring monitoring;
+    private Logger loggerSchool;
+    private Monitoring monitoringSchool;
 
-    public Service(Logger logger, Monitoring monitoring) {
-        this.logger = logger;
-        this.monitoring = monitoring;
+    @Autowired
+    public Service(Logger loggerSchool, Monitoring monitoringSchool) {
+        this.loggerSchool = loggerSchool;
+        this.monitoringSchool = monitoringSchool;
     }
 
-    public Logger getLogger() {
-        return logger;
+    public Logger getLoggerSchool() {
+        return loggerSchool;
     }
 
-    public Monitoring getMonitoring() {
-        return monitoring;
+    public Monitoring getMonitoringSchool() {
+        return monitoringSchool;
     }
 }

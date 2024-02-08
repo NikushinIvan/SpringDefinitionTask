@@ -9,7 +9,7 @@ import ru.sber.shool.service.Service;
 public class ServiceCompositeBeanDefinition {
 
 
-    public Service create(Logger logger, Monitoring monitoring) {
-        return new Service(logger, monitoring);
+    public Service create(Logger loggerSchool, Monitoring monitoringSchool) {
+        return new Service(loggerSchool, monitoringSchool);
     }
 }

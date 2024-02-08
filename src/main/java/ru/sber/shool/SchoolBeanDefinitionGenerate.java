@@ -22,6 +22,9 @@ import java.util.Map;
 public class SchoolBeanDefinitionGenerate {
 
     private final static String FACTORY_BEAN = StringUtils.uncapitalize(ServiceCompositeBeanDefinition.class.getSimpleName());
+    private final static String FACTORY_LOGGER_BEAN = StringUtils.uncapitalize(LoggerBeanFactory.class.getSimpleName());
+    private final static String FACTORY_MONITORING_BEAN = StringUtils.uncapitalize(MonitoringBeanFactory.class.getSimpleName());
+
 
     /**
      *
@@ -39,17 +42,38 @@ public class SchoolBeanDefinitionGenerate {
             String host = annotation.host();
             String annotationServiceName = annotation.serviceName();
 
-            var serviceDefinition = BeanDefinitionBuilder
-                    .genericBeanDefinition(Service.class)
-                    .setFactoryMethodOnBean("create", FACTORY_BEAN)
-                    .addConstructorArgValue(new LoggerBeanFactory().createLoggerService(annotationServiceName))
-                    .addConstructorArgValue(new MonitoringBeanFactory().createMonitoringService(host))
-                    .getBeanDefinition();
+            result.put("monitoring" + annotationServiceName, configMonitoringDefinition(host));
+            result.put("logger" + annotationServiceName, configLoggerDefinition(annotationServiceName));
+            result.put(annotationServiceName, configServiceDefinition(annotationServiceName));
 
-            result.put(annotationServiceName, serviceDefinition);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private AbstractBeanDefinition configMonitoringDefinition(String host) {
+        return BeanDefinitionBuilder
+                .genericBeanDefinition(Monitoring.class)
+                .setFactoryMethodOnBean("createMonitoringService", FACTORY_MONITORING_BEAN)
+                .addConstructorArgValue(host)
+                .getBeanDefinition();
+    }
+
+    private AbstractBeanDefinition configLoggerDefinition(String serviceName) {
+        return BeanDefinitionBuilder
+                .genericBeanDefinition(Logger.class)
+                .setFactoryMethodOnBean("createLoggerService", FACTORY_LOGGER_BEAN)
+                .addConstructorArgValue(serviceName)
+                .getBeanDefinition();
+    }
+
+    private AbstractBeanDefinition configServiceDefinition(String serviceName) {
+        return BeanDefinitionBuilder
+                .genericBeanDefinition(Service.class)
+                .setFactoryMethodOnBean("create", FACTORY_BEAN)
+                .addConstructorArgReference("logger" + serviceName)
+                .addConstructorArgReference("monitoring" + serviceName)
+                .getBeanDefinition();
     }
 }

@@ -2,10 +2,7 @@ package ru.sber;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import ru.sber.shool.service.Logger;
-import ru.sber.shool.service.Monitoring;
 import ru.sber.shool.service.Service;
 
 @Configuration
@@ -18,10 +15,10 @@ public class InheritanceDemo {
 		Service school2 = (Service) applicationContext.getBean("School2");
 
 
-		school1.getLogger().sendStartServiceMassage();
-		school1.getMonitoring().sendMetrics();
+		school1.getLoggerSchool().sendStartServiceMassage();
+		school1.getMonitoringSchool().sendMetrics();
 
-		school2.getLogger().sendStartServiceMassage();
-		school2.getMonitoring().sendMetrics();
+		school2.getLoggerSchool().sendStartServiceMassage();
+		school2.getMonitoringSchool().sendMetrics();
 	}
 }
